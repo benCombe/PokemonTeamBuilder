@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <script>
+            import puppeteer from "puppeteer";
+            var main = document.getElementById("main");
+
+
+            async function scrapeData(url){
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+                await page.goto(url, {waitUntil: "domcontentloaded"});
+
+
+                const[dexNum] = await page.$x('//*[@id="tab-basic-1"]/div[1]/div[2]/table/tbody/tr[1]/td/strong');
+                const[primaryType] = await page.$x('//*[@id="tab-basic-1"]/div[1]/div[2]/table/tbody/tr[2]/td/a[1]');
+                const[secondaryType] = await page.$x('//*[@id="tab-basic-1"]/div[1]/div[2]/table/tbody/tr[2]/td/a[2]');
+
+                numText = (await dexNum.getProperty('textContent')).jsonValue();
+                priText = (await primaryType.getProperty('textContent')).jsonValue();
+                secText = (await secondaryType.getProperty('textContent')).jsonValue();
+
+                main.innerHTML = numText + "\t" + priText + "\t" + secText;
+                console.log(numText + "\t" + priText + "\t" + secText);
+                browser.close();
+            }
+
+            function testFunction(){
+                scrapeData('https://pokemondb.net/pokedex/bulbasaur');
+            }
+        </script>
+        <!--script type="text/javascript" src="/Users/Programming/Documents/Coding/VS Projects/PokemonTeamBuilder/scripts/dataScraper.js"></script-->
+        <div id = "main">
+            <h1>Hello</h1>
+        </div>
+        <button id = "testButton" onclick = "testFunction()">Test</button>
+
+    </body>
+
+</html>
